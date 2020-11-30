@@ -19,6 +19,7 @@ Share<float_t> US_distance ("cm");
 Share<float_t> IR_distance ("cm");
 Share<int32_t> M1_duty_cycle ("PWM");
 Share<int32_t> M2_duty_cycle ("PWM");
+Share<bool> turn ("Turn");
 float us_duration;
 float us_distance;
 int ir_reading;
@@ -40,21 +41,48 @@ void task_process_sensor_data (void* p_params)
 
     float us_distance;
     float ir_distance;
+    int state;  //0 = running, 1 = stopped
 
     for (;;)
     {
         US_distance.get(us_distance);
         IR_distance.get(ir_distance);
         if(us_distance > 40){
-            Serial << "Keep Running" << endl;
+            //Serial << "Keep Running" << endl;
+            state = 0;
+            //calculates simulated motor speed
+            
+            M1_duty_cycle.put(150); //run motor full speed
+            // M2_duty_cycle.put(150);
+            turn.put(false);
         }
         else{
             //check IR
             if (ir_distance > 20){
-                Serial << "Slow down!!" << endl;
+                //Serial << "Slow down!!" << endl;
+                state = 0;
+                M1_duty_cycle.put(75); //run motor ~1/3 speed
+                // M2_duty_cycle.put(75);
+                turn.put(false);
             }
             else{
-                Serial << "Stop!!" << endl;
+                if(state){
+                    //Serial << "Turn!!" << endl;
+                    M1_duty_cycle.put(-75);
+                    // M2_duty_cycle.put(75);
+                }
+                else{
+                    //Serial << "Stop!!" << endl;
+                    
+                    
+                    state = 1;
+                    M1_duty_cycle.put(0);
+
+                    delay(1000);    //pause 1s to allow motor/car to come to complete stop before turning
+                    
+                    // M2_duty_cycle.put(0);
+                }
+                
             }
         }
 
@@ -97,11 +125,11 @@ void task_sensor_scan (void* p_params)
         delayMicroseconds (10);
         us_duration = pulseIn(A1, HIGH, 30000);
         us_distance = us_duration / 58.2;
-        Serial << "Ultrasonic: " << us_distance << endl;
+        //Serial << "Ultrasonic: " << us_distance << endl;  //test ultrasonic reading
         
         ir_reading = analogRead(A5);
         ir_distance = (5269.8/(ir_reading-136.88));
-        Serial << "Infrared: " << ir_distance << endl;
+        //Serial << "Infrared: " << ir_distance << endl;    //test IR reading
 
         US_distance.put(us_distance);
         IR_distance.put(ir_distance);
@@ -130,12 +158,15 @@ void task_RS_Motor1 (void* p_params)
     // It will be used to run the task at precise intervals
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
-    float sim_A = 0.99;
-    float sim_B = 1 - sim_A;
+    
     int32_t duty_cycle_var;
+    float sim_A = 0.9;
+    float sim_B = 1 - sim_A;
     float sim_speed;
 
-    MotorControl MotorA(D6, D2, D4, D9);
+    //MotorControl MotorA(D6, D2, D4, D9);
+    MotorControl MotorA(D12, D7, D8, D10);
+    bool turn;
 
 
     for (;;)
@@ -143,8 +174,26 @@ void task_RS_Motor1 (void* p_params)
         // Gets duty_cycle_var from share
         M1_duty_cycle.get(duty_cycle_var);
 
-        //calculates simulated motor speed
-        sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B; 
+        if(duty_cycle_var == 0){
+            sim_speed = 0;  //if we want to stop the motor, just stop it
+            turn = true;
+        }
+        else{
+            if(duty_cycle_var < 0){
+                sim_speed = sim_speed * sim_A - duty_cycle_var * sim_B;    //otherwise, smoothly change speed
+                turn = true;
+            }
+            else{
+                sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
+                turn = false;
+            }
+        }
+        
+        //Serial << duty_cycle_var << endl;    //test duty_cycle_var
+        Serial << sim_speed << endl;    //test sim_speed
+        
+        MotorA.runMotor((uint32_t) sim_speed, turn);
+        // MotorB.runMotor((uin32_t) sim_speed, true);
         
         vTaskDelayUntil (&xLastWakeTime, sim_period);
     }

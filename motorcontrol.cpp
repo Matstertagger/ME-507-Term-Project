@@ -28,12 +28,13 @@ void MotorControl::runMotor(uint32_t duty_cycle, bool clockwise){
 
     // EN SET HIGH
     digitalWrite (EN_stored, HIGH);
+    
 
     if(duty_cycle == 0){
         //INA SET HIGH, INB SET HIGH
         digitalWrite (IN_A_stored, HIGH);
         digitalWrite (IN_B_stored, HIGH);
-        Serial << "Stop Motor" << endl;
+        //Serial << "Stop Motor" << endl;   //Test that code enters this if statement
     }
     else{
         if(clockwise){
@@ -46,7 +47,7 @@ void MotorControl::runMotor(uint32_t duty_cycle, bool clockwise){
             digitalWrite (IN_A_stored, LOW);
             digitalWrite (IN_B_stored, HIGH);
         }
-        analogWrite (PWM_stored, duty_cycle);
     }
+    analogWrite (PWM_stored, duty_cycle);
     
 }
