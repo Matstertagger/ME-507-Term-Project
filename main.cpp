@@ -55,6 +55,7 @@ void task_process_sensor_data (void* p_params)
             M1_duty_cycle.put(100); //run motor full speed
             M2_duty_cycle.put(100);
             turn.put(false);
+            turn.put(false);
         }
         else{
             //check IR
@@ -64,12 +65,14 @@ void task_process_sensor_data (void* p_params)
                 M1_duty_cycle.put(50); //run motor ~1/3 speed
                 M2_duty_cycle.put(50);
                 turn.put(false);
+                turn.put(false);
             }
             else{
                 if(state){
                     Serial << "Turn!!" << endl;
-                    M1_duty_cycle.put(-50);
+                    M1_duty_cycle.put(50);
                     M2_duty_cycle.put(50);
+                    turn.put(true);
                 }
                 else{
                     Serial << "Stop!!" << endl;
@@ -77,6 +80,7 @@ void task_process_sensor_data (void* p_params)
                     state = 1;
                     M1_duty_cycle.put(0);
                     M2_duty_cycle.put(0);
+                    turn.put(false);
 
                     delay(1000);    //pause 1s to allow motor/car to come to complete stop before turning
                 
@@ -160,7 +164,7 @@ void task_RS_Motor1 (void* p_params)
     float sim_speed;
 
     MotorControl MotorA(D12, D7, D8, D10);
-    bool turn;
+    bool turn_stored;
 
 
     for (;;)
@@ -170,23 +174,17 @@ void task_RS_Motor1 (void* p_params)
 
         if(duty_cycle_var == 0){
             sim_speed = 0;  //if we want to stop the motor, just stop it
-            turn = true;
+            turn_stored = true;
         }
         else{
-            if(duty_cycle_var < 0){
-                sim_speed = sim_speed * sim_A - duty_cycle_var * sim_B;    //otherwise, smoothly change speed
-                turn = true;
-            }
-            else{
-                sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
-                turn = false;
-            }
+            sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
+            turn.get(turn_stored);
         }
         
         //Serial << duty_cycle_var << endl;    //test duty_cycle_var
         //Serial << sim_speed << endl;    //test sim_speed
         
-        MotorA.runMotor((uint32_t) sim_speed, turn);
+        MotorA.runMotor((uint32_t) sim_speed, turn_stored);
         
         vTaskDelayUntil (&xLastWakeTime, sim_period);
     }
