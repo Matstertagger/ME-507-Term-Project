@@ -166,7 +166,7 @@ void task_RS_Motor1 (void* p_params)
         M1_duty_cycle.get(duty_cycle_var);
 
         if(duty_cycle_var == 0){
-            sim_speed = 0;  //if we want to stop the motor, just stop it
+            motor_speed = 0;  //if we want to stop the motor, just stop it
             turn_stored = true; //store that we want to turn the vehicle
         }
         else{
@@ -215,7 +215,7 @@ void task_RS_Motor2 (void* p_params)
         M2_duty_cycle.get(duty_cycle_var);
 
         if(duty_cycle_var == 0){
-            sim_speed = 0;  //if we want to stop the motor, just stop it
+            motor_speed = 0;  //if we want to stop the motor, just stop it
         }
         else{
             motor_speed = motor_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
@@ -224,7 +224,7 @@ void task_RS_Motor2 (void* p_params)
         //Serial << duty_cycle_var << endl;    //test duty_cycle_var in Serial monitor
         //Serial << motor_speed << endl;    //test motor_speed in Serial monitor
         
-        MotorB.runMotor((uint32_t) sim_speed, true); //run motor at desired speed and direction
+        MotorB.runMotor((uint32_t) motor_speed, true); //run motor at desired speed and direction
         //always run this motor clockwise (even when turning)
         
         vTaskDelayUntil (&xLastWakeTime, sim_period);
