@@ -77,16 +77,16 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aa41944b85fee040548f90f5646de7a37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#aa41944b85fee040548f90f5646de7a37">task_process_sensor_data</a> (void *p_params)</td></tr>
-<tr class="memdesc:aa41944b85fee040548f90f5646de7a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which interacts with a user.  <a href="main_8cpp.html#aa41944b85fee040548f90f5646de7a37">More...</a><br /></td></tr>
+<tr class="memdesc:aa41944b85fee040548f90f5646de7a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which processes sensor distance data and determines motor actions.  <a href="main_8cpp.html#aa41944b85fee040548f90f5646de7a37">More...</a><br /></td></tr>
 <tr class="separator:aa41944b85fee040548f90f5646de7a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ec8d10f3d242ceda9e317391e5b2f75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a2ec8d10f3d242ceda9e317391e5b2f75">task_sensor_scan</a> (void *p_params)</td></tr>
-<tr class="memdesc:a2ec8d10f3d242ceda9e317391e5b2f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which simulates a motor.  <a href="main_8cpp.html#a2ec8d10f3d242ceda9e317391e5b2f75">More...</a><br /></td></tr>
+<tr class="memdesc:a2ec8d10f3d242ceda9e317391e5b2f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which scans two proximity sensors and places readings into shares.  <a href="main_8cpp.html#a2ec8d10f3d242ceda9e317391e5b2f75">More...</a><br /></td></tr>
 <tr class="separator:a2ec8d10f3d242ceda9e317391e5b2f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d10a607affb456db666223af3796826"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a8d10a607affb456db666223af3796826">task_RS_Motor1</a> (void *p_params)</td></tr>
-<tr class="memdesc:a8d10a607affb456db666223af3796826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which interacts with a user.  <a href="main_8cpp.html#a8d10a607affb456db666223af3796826">More...</a><br /></td></tr>
+<tr class="memdesc:a8d10a607affb456db666223af3796826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which runs a motor.  <a href="main_8cpp.html#a8d10a607affb456db666223af3796826">More...</a><br /></td></tr>
 <tr class="separator:a8d10a607affb456db666223af3796826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81398860ac94a076db79a586e50f3703"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a81398860ac94a076db79a586e50f3703">task_RS_Motor2</a> (void *p_params)</td></tr>
-<tr class="memdesc:a81398860ac94a076db79a586e50f3703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which interacts with a user.  <a href="main_8cpp.html#a81398860ac94a076db79a586e50f3703">More...</a><br /></td></tr>
+<tr class="memdesc:a81398860ac94a076db79a586e50f3703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task which runs a motor.  <a href="main_8cpp.html#a81398860ac94a076db79a586e50f3703">More...</a><br /></td></tr>
 <tr class="separator:a81398860ac94a076db79a586e50f3703"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fc01d736fe50cf5b977f755b675f11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d">setup</a> ()</td></tr>
 <tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arduino setup function which runs once at program startup.  <a href="main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
@@ -98,8 +98,7 @@ Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a0074a6b675dee212b35cbcefca34a1ec"><td class="memItemLeft" align="right" valign="top"><a id="a0074a6b675dee212b35cbcefca34a1ec"></a>
-<a class="el" href="class_share.html">Share</a>&lt; float_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a0074a6b675dee212b35cbcefca34a1ec">US_distance</a> (&quot;cm&quot;)</td></tr>
-<tr class="memdesc:a0074a6b675dee212b35cbcefca34a1ec"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_share.html" title="Class for data to be shared in a thread-safe manner between tasks.">Share</a> that carries an integer from user interface to simulation task. <br /></td></tr>
+<a class="el" href="class_share.html">Share</a>&lt; float_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>US_distance</b> (&quot;cm&quot;)</td></tr>
 <tr class="separator:a0074a6b675dee212b35cbcefca34a1ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4b6328c2339032747c9c902a951f889"><td class="memItemLeft" align="right" valign="top"><a id="ae4b6328c2339032747c9c902a951f889"></a>
 <a class="el" href="class_share.html">Share</a>&lt; float_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IR_distance</b> (&quot;cm&quot;)</td></tr>
@@ -113,23 +112,13 @@ Variables</h2></td></tr>
 <tr class="memitem:a2796ad8f307b7c731da67987a549823c"><td class="memItemLeft" align="right" valign="top"><a id="a2796ad8f307b7c731da67987a549823c"></a>
 <a class="el" href="class_share.html">Share</a>&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>turn</b> (&quot;Turn&quot;)</td></tr>
 <tr class="separator:a2796ad8f307b7c731da67987a549823c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab450547eb548ec6b63f47a7cffa24113"><td class="memItemLeft" align="right" valign="top"><a id="ab450547eb548ec6b63f47a7cffa24113"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>us_duration</b></td></tr>
-<tr class="separator:ab450547eb548ec6b63f47a7cffa24113"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa94808185ee3b04a968013f2aec28964"><td class="memItemLeft" align="right" valign="top"><a id="aa94808185ee3b04a968013f2aec28964"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>us_distance</b></td></tr>
-<tr class="separator:aa94808185ee3b04a968013f2aec28964"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a352286f9aeab2875a6caa6b4055426a9"><td class="memItemLeft" align="right" valign="top"><a id="a352286f9aeab2875a6caa6b4055426a9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_reading</b></td></tr>
-<tr class="separator:a352286f9aeab2875a6caa6b4055426a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f619a1850cbf7d2bf79bb7bcee24fd2"><td class="memItemLeft" align="right" valign="top"><a id="a3f619a1850cbf7d2bf79bb7bcee24fd2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_distance</b></td></tr>
-<tr class="separator:a3f619a1850cbf7d2bf79bb7bcee24fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This file contains a program that measures some angles.</p>
-<dl class="section author"><dt>Author</dt><dd>Peyton Ulrich, Jose Chavez, Tagupa</dd></dl>
-<dl class="section date"><dt>Date</dt><dd>5 Nov 2020 Original file </dd></dl>
+<div class="textblock"><p>This file contains a program containing 4 tasks to run a collision avoidance car. The car takes in inputs from an ultrasonic sensor and infrared sensor to detect objects. The car is driven by two motors connected to the back two wheels of the car. This program uses the sensors, processes sensor data, and determines how to run the two motors. Task structure based on framework provided by Prof. J.R. Ridgeley IR Sensor Code Calculations based on sample code at <a href="https://github.com/sparkfun/simple_sketches/blob/master/sharp/sharp.ino">https://github.com/sparkfun/simple_sketches/blob/master/sharp/sharp.ino</a> US Sensor Code Calculations based on sample code at <a href="https://cdn-learn.adafruit.com/downloads/pdf/distance-measurement-ultrasound-hcsr04.pdf">https://cdn-learn.adafruit.com/downloads/pdf/distance-measurement-ultrasound-hcsr04.pdf</a></p>
+<dl class="section author"><dt>Author</dt><dd>Peyton Ulrich, Jose Chavez, Matt Tagupa</dd></dl>
+<dl class="section date"><dt>Date</dt><dd>10 Nov 2020 Original file </dd>
+<dd>
+01 Dec 2020 Updated file </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="afe461d27b9c48d5921c00d521181f12f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afe461d27b9c48d5921c00d521181f12f">&#9670;&nbsp;</a></span>loop()</h2>
@@ -187,8 +176,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_distance</b></td></
       </table>
 </div><div class="memdoc">
 
-<p>Task which interacts with a user. </p>
-<p>This task demonstrates how to use a FreeRTOS task for interacting with some user while other more important things are going on. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Task which processes sensor distance data and determines motor actions. </p>
+<p>This task takes in distance readings from IR and US sensors and determines the correct action from the vehicle. It then places two PWM duty cycles to shares which will be carried to the RS_Motor1/RS_Motor2 tasks. <br  />
+ </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p_params</td><td>A pointer to function parameters which we don't use. </td></tr>
   </table>
@@ -213,8 +203,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_distance</b></td></
       </table>
 </div><div class="memdoc">
 
-<p>Task which interacts with a user. </p>
-<p>This task demonstrates how to use a FreeRTOS task for interacting with some user while other more important things are going on. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Task which runs a motor. </p>
+<p>This task uses the PWM duty cycle given to it and decides how to run the motor </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p_params</td><td>A pointer to function parameters which we don't use. </td></tr>
   </table>
@@ -239,8 +229,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_distance</b></td></
       </table>
 </div><div class="memdoc">
 
-<p>Task which interacts with a user. </p>
-<p>This task demonstrates how to use a FreeRTOS task for interacting with some user while other more important things are going on. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Task which runs a motor. </p>
+<p>This task uses the PWM duty cycle given to it and decides how to run the motor </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p_params</td><td>A pointer to function parameters which we don't use. </td></tr>
   </table>
@@ -265,8 +255,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ir_distance</b></td></
       </table>
 </div><div class="memdoc">
 
-<p>Task which simulates a motor. </p>
-<p>This task runs at precise interfals using <code>vTaskDelayUntil()</code> and sort of simulates a motor whose duty cycle is controlled by a power level sent from the UI task. The simulation is just a very simple implementation of a first-order filter. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Task which scans two proximity sensors and places readings into shares. </p>
+<p>This task runs an ultrasonic sensor and an infrared sensor to collect proximity readings. Code to use these sensors is borrowed from example code found online and cited within comments. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p_params</td><td>A pointer to function parameters which we don't use. </td></tr>
   </table>

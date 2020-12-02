@@ -9,13 +9,13 @@
 \begin{DoxyCompactItemize}
 \item 
 void \mbox{\hyperlink{main_8cpp_aa41944b85fee040548f90f5646de7a37}{task\+\_\+process\+\_\+sensor\+\_\+data}} (void $\ast$p\+\_\+params)
-\begin{DoxyCompactList}\small\item\em Task which interacts with a user. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Task which processes sensor distance data and determines motor actions. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{main_8cpp_a2ec8d10f3d242ceda9e317391e5b2f75}{task\+\_\+sensor\+\_\+scan}} (void $\ast$p\+\_\+params)
-\begin{DoxyCompactList}\small\item\em Task which simulates a motor. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Task which scans two proximity sensors and places readings into shares. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{main_8cpp_a8d10a607affb456db666223af3796826}{task\+\_\+\+R\+S\+\_\+\+Motor1}} (void $\ast$p\+\_\+params)
-\begin{DoxyCompactList}\small\item\em Task which interacts with a user. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Task which runs a motor. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{main_8cpp_a81398860ac94a076db79a586e50f3703}{task\+\_\+\+R\+S\+\_\+\+Motor2}} (void $\ast$p\+\_\+params)
-\begin{DoxyCompactList}\small\item\em Task which interacts with a user. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Task which runs a motor. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}{setup}} ()
 \begin{DoxyCompactList}\small\item\em Arduino setup function which runs once at program startup. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
@@ -24,8 +24,8 @@ void \mbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{main_8cpp_a0074a6b675dee212b35cbcefca34a1ec}\label{main_8cpp_a0074a6b675dee212b35cbcefca34a1ec}} 
-\mbox{\hyperlink{class_share}{Share}}$<$ float\+\_\+t $>$ \mbox{\hyperlink{main_8cpp_a0074a6b675dee212b35cbcefca34a1ec}{U\+S\+\_\+distance}} (\char`\"{}cm\char`\"{})
-\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{class_share}{Share}} that carries an integer from user interface to simulation task. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_share}{Share}}$<$ float\+\_\+t $>$ {\bfseries U\+S\+\_\+distance} (\char`\"{}cm\char`\"{})
+\item 
 \mbox{\Hypertarget{main_8cpp_ae4b6328c2339032747c9c902a951f889}\label{main_8cpp_ae4b6328c2339032747c9c902a951f889}} 
 \mbox{\hyperlink{class_share}{Share}}$<$ float\+\_\+t $>$ {\bfseries I\+R\+\_\+distance} (\char`\"{}cm\char`\"{})
 \item 
@@ -37,29 +37,19 @@ void \mbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
 \item 
 \mbox{\Hypertarget{main_8cpp_a2796ad8f307b7c731da67987a549823c}\label{main_8cpp_a2796ad8f307b7c731da67987a549823c}} 
 \mbox{\hyperlink{class_share}{Share}}$<$ bool $>$ {\bfseries turn} (\char`\"{}Turn\char`\"{})
-\item 
-\mbox{\Hypertarget{main_8cpp_ab450547eb548ec6b63f47a7cffa24113}\label{main_8cpp_ab450547eb548ec6b63f47a7cffa24113}} 
-float {\bfseries us\+\_\+duration}
-\item 
-\mbox{\Hypertarget{main_8cpp_aa94808185ee3b04a968013f2aec28964}\label{main_8cpp_aa94808185ee3b04a968013f2aec28964}} 
-float {\bfseries us\+\_\+distance}
-\item 
-\mbox{\Hypertarget{main_8cpp_a352286f9aeab2875a6caa6b4055426a9}\label{main_8cpp_a352286f9aeab2875a6caa6b4055426a9}} 
-int {\bfseries ir\+\_\+reading}
-\item 
-\mbox{\Hypertarget{main_8cpp_a3f619a1850cbf7d2bf79bb7bcee24fd2}\label{main_8cpp_a3f619a1850cbf7d2bf79bb7bcee24fd2}} 
-int {\bfseries ir\+\_\+distance}
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-This file contains a program that measures some angles.
+This file contains a program containing 4 tasks to run a collision avoidance car. The car takes in inputs from an ultrasonic sensor and infrared sensor to detect objects. The car is driven by two motors connected to the back two wheels of the car. This program uses the sensors, processes sensor data, and determines how to run the two motors. Task structure based on framework provided by Prof. J.\+R. Ridgeley IR Sensor Code Calculations based on sample code at \href{https://github.com/sparkfun/simple_sketches/blob/master/sharp/sharp.ino}{\texttt{ https\+://github.\+com/sparkfun/simple\+\_\+sketches/blob/master/sharp/sharp.\+ino}} US Sensor Code Calculations based on sample code at \href{https://cdn-learn.adafruit.com/downloads/pdf/distance-measurement-ultrasound-hcsr04.pdf}{\texttt{ https\+://cdn-\/learn.\+adafruit.\+com/downloads/pdf/distance-\/measurement-\/ultrasound-\/hcsr04.\+pdf}}
 
 \begin{DoxyAuthor}{Author}
-Peyton Ulrich, Jose Chavez, Tagupa
+Peyton Ulrich, Jose Chavez, Matt Tagupa
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
-5 Nov 2020 Original file 
+10 Nov 2020 Original file 
+
+01 Dec 2020 Updated file 
 \end{DoxyDate}
 
 
@@ -92,9 +82,10 @@ This function sets up a serial port for communication and creates the tasks whic
 
 
 
-Task which interacts with a user. 
+Task which processes sensor distance data and determines motor actions. 
 
-This task demonstrates how to use a Free\+R\+T\+OS task for interacting with some user while other more important things are going on. 
+This task takes in distance readings from IR and US sensors and determines the correct action from the vehicle. It then places two P\+WM duty cycles to shares which will be carried to the R\+S\+\_\+\+Motor1/\+R\+S\+\_\+\+Motor2 tasks. ~\newline
+ 
 \begin{DoxyParams}{Parameters}
 {\em p\+\_\+params} & A pointer to function parameters which we don\textquotesingle{}t use. \\
 \hline
@@ -107,9 +98,9 @@ This task demonstrates how to use a Free\+R\+T\+OS task for interacting with som
 
 
 
-Task which interacts with a user. 
+Task which runs a motor. 
 
-This task demonstrates how to use a Free\+R\+T\+OS task for interacting with some user while other more important things are going on. 
+This task uses the P\+WM duty cycle given to it and decides how to run the motor 
 \begin{DoxyParams}{Parameters}
 {\em p\+\_\+params} & A pointer to function parameters which we don\textquotesingle{}t use. \\
 \hline
@@ -122,9 +113,9 @@ This task demonstrates how to use a Free\+R\+T\+OS task for interacting with som
 
 
 
-Task which interacts with a user. 
+Task which runs a motor. 
 
-This task demonstrates how to use a Free\+R\+T\+OS task for interacting with some user while other more important things are going on. 
+This task uses the P\+WM duty cycle given to it and decides how to run the motor 
 \begin{DoxyParams}{Parameters}
 {\em p\+\_\+params} & A pointer to function parameters which we don\textquotesingle{}t use. \\
 \hline
@@ -137,9 +128,9 @@ This task demonstrates how to use a Free\+R\+T\+OS task for interacting with som
 
 
 
-Task which simulates a motor. 
+Task which scans two proximity sensors and places readings into shares. 
 
-This task runs at precise interfals using {\ttfamily v\+Task\+Delay\+Until()} and sort of simulates a motor whose duty cycle is controlled by a power level sent from the UI task. The simulation is just a very simple implementation of a first-\/order filter. 
+This task runs an ultrasonic sensor and an infrared sensor to collect proximity readings. Code to use these sensors is borrowed from example code found online and cited within comments. 
 \begin{DoxyParams}{Parameters}
 {\em p\+\_\+params} & A pointer to function parameters which we don\textquotesingle{}t use. \\
 \hline

@@ -4,7 +4,7 @@ We started the design of the board by looking at how the sensors would connect t
  After looking at sensor connections, we added the motor drivers and the components needed to control their inputs and outputs. Dual V\+N\+H5019 motor driver chips were chosen to simultaneously drive two motors. The circuit necessary to run these motor driver chips was based off Pololu’s Dual V\+N\+H5019 Motor Driver Shield for Arduino \mbox{[}5\mbox{]}. Screw terminal blocks were included for the input and output voltage for the motors to make the connection easy and stable.
 
  ~\newline
- \hypertarget{page__des_subsec}{}\doxysubsection{P\+C\+B Schematic}\label{page__des_subsec}
+ \hypertarget{page__des_subsec_Board}{}\doxysubsection{P\+C\+B Board Layout}\label{page__des_subsec_Board}
 The last step in our board design was to determine the layout of the components and the connection lines between the components that needed to be connected. When we had first designed our board, the motor drivers were to be mounted along the left side of the board while the rest of the components would be placed on the other side of the board. However, this created a chaotic board design and the motor driver chips did not seem like they would be getting enough voltage to power the motors in a timely manner, which could ultimately permanently damage other resistors on the board. We were recommended to increase the size of connections that were supplying high voltage outputs (of about 12V). We redesigned the board into the one shown. This was the final board we designed and ordered for the Collision Avoidance System. ~\newline
   ~\newline
  \begin{DoxyAuthor}{Author}

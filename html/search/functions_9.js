@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['setup_84',['setup',['../main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d',1,'main.cpp']]],
-  ['share_85',['Share',['../class_share.html#a0948b04d00aef072f25af2f49ecfa259',1,'Share']]]
+  ['runmotor_85',['runMotor',['../class_motor_control.html#abe5458d3ba35f2373ade3343e1726981',1,'MotorControl']]]
 ];

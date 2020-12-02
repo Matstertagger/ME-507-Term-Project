@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['task_5fprocess_5fsensor_5fdata_86',['task_process_sensor_data',['../main_8cpp.html#aa41944b85fee040548f90f5646de7a37',1,'main.cpp']]],
-  ['task_5frs_5fmotor1_87',['task_RS_Motor1',['../main_8cpp.html#a8d10a607affb456db666223af3796826',1,'main.cpp']]],
-  ['task_5frs_5fmotor2_88',['task_RS_Motor2',['../main_8cpp.html#a81398860ac94a076db79a586e50f3703',1,'main.cpp']]],
-  ['task_5fsensor_5fscan_89',['task_sensor_scan',['../main_8cpp.html#a2ec8d10f3d242ceda9e317391e5b2f75',1,'main.cpp']]]
+  ['setup_86',['setup',['../main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d',1,'main.cpp']]],
+  ['share_87',['Share',['../class_share.html#a0948b04d00aef072f25af2f49ecfa259',1,'Share']]]
 ];
