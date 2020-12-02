@@ -1,0 +1,138 @@
+/** @file mainpage.dox
+ *  @author Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *  @copyright (c) 2020 by Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *  @mainpage
+ *
+ *
+ *  @section s_intro Introduction
+ *  This project is to implement a Collision Avoidance System on a ground vehicle.
+ *  The idea, inspired by DIY Builder on YouTube, is to build a ground vehicle that
+ *  houses a STM32 Nucleo-64 development board with STM32L476RG MCU, a custom designed
+ *  PCB, an ultrasonic sensor, and an infrared sensor, all powered by a battery pack.
+ *  The goal is to write code in c++ that will communicate with the vehicle's motors, as well
+ *  as the two sensors, through the custom designed PCB and the Nucleo board to control the
+ *  the speed of the vehicle in order to avoid colliding with a wall.
+ *
+ *
+ *  @section sec_Prop Original Project Proposal
+ *
+ *  @image html Project_Proposal.png  width=75%
+ *  @image html 507-project_idea.png "Figure 1. Sketch of the original idea and design" width=50%
+ *
+ *  @author Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @copyright (c) 2020 by Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @date December 1, 2020
+ *
+ *  @page page_Hard Hardware Design
+ *  The design of the hardware for our system is split into three primary stages: component
+ *  selection, electronic system design, and mechanical system design. Due to the importance
+ *  of the PCB desing for the ME 507 course, we have given it its own dedicated page.
+ *
+ *  @section sec_Sel Component Selection
+ *  Our vehicle began with the internals needed to power the vehicle and all the components
+ *  and then building from the inside out. Each member of our team was comfortable using the
+ *  Nucleo - STM32L476RG microcontroller and since we all knew that this Nucleo had a large
+ *  amounts of capability with plenty of input and output pins, we decided to choose it as our
+ *  main computational unit. 
+ *
+ *  @image html Nucleo_L476RG.png "Figure 2. STM32L476RG Microcontroller used to control our project " \n
+ *
+ *  @subsection subsec_Sens Sensors
+ *  The main determining factor in selecting sensors was the cost. We went with the most affordable sensor
+ *  That we thought was able to do the job required. We went with one ultrasonic sensor for the longer range
+ *  of operation and we choose an infrared sensor for its shorter operation range. \n
+ *  
+ *  @image html UltrasonicSensor.png "Figure 3. HC-SR04 Ultrasonic Sensor chosen for its affordability and longer range of operation " \n
+ * \n
+ *
+ *  @image html IRSensor.jpg "Figure 4. Sharp GP2Y0A21YK Infrared Sensor chosen for its affordability and shorter range of operation " \n
+ *
+ *
+ *
+ *  @section sec_Mech Mechanical System Design
+ *  The final step for the physical design was the mechanical aspect of our Collision Avoidance System Vehicle. When we had proposed our
+ *  project, Figure 5 was the sketch that we had proposed to design. At the time of the proposal, we had only intended to use an ultrasonic
+ *  sensor to avoid collisions. After looking at the size of the ultrasonic sensor, adding an infrared sensor, and designing our board to
+ *  attach to the STM32 Nucleo as a shield, our design changed to the one shown in Figure 6. \n
+ *
+ *  @image html Original_Sketch.png "Figure 5. Original proposed design of the vehicle. This only includes one sensor and the custom design board
+ *  was initially not going to be mounted on the Nucleo board as a shield. " \n
+ *
+ *  @image html Final_Sketch.png "Figure 6. Final physical design plan before building. Although not shown, we are including the two sensors at the front
+ *  of the vehicle. The custom designed board will also be mounted on top of the nucleo board, to be use as an arduino shield. Also, The battery location
+ *  was determined to be in the middle of the vehicle. " \n
+ *
+ *  @author Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @copyright (c) 2020 by Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @date December 1, 2020
+ *
+ *  @page page_Des Electronic System Design
+ *  After selecting the components for our system, we were able to design the PCB to carry
+ *  these components and interface with the STM32 Nucleo. We had originally intended to create
+ *  a separate board that we would connect to the STM32 Nucleo as shown in Figure 4. However,
+ *  we were advised to make the circuit simple and easy to assemble, therefore we decided to
+ *  build the circuit around an Arduino shield for the STM32 Nucleo.  \n 
+ *
+ *  @subsection subsec PCB Schematic
+ *  We started the design of the board by looking at how the sensors would connect to the board.
+ *  The circuit integrating the HC-SR04 ultrasonic sensor was based on references [2] and [3].
+ *  They utilize two 10k resistors to create a voltage divider that split the sensor’s output
+ *  signal from 5V to 2.5V. The circuit integrating the Sharp GP2Y0A21YK infrared sensor was
+ *  based on reference [4] which also used two 10k resistors as a voltage divider. This also
+ *  split the sensor’s analog voltage output from a range of 0-5V to 0-2.5V. The voltage dividers
+ *  in this circuit were intended to keep the return signal to the MCU at the readable range of
+ *  0-3.3V. We added screw terminal blocks to make connecting the sensors easy. \n
+ *  After looking at sensor connections, we added the motor drivers and the components needed to
+ *  control their inputs and outputs. Dual VNH5019 motor driver chips were chosen to simultaneously
+ *  drive two motors. The circuit necessary to run these motor driver chips was based off Pololu’s
+ *  Dual VNH5019 Motor Driver Shield for Arduino [5]. Screw terminal blocks were included for the
+ *  input and output voltage for the motors to make the connection easy and stable.
+ *
+ *  @image html Final_Schematic.png "Figure 2. Schematic made using Eagle for the Collision Avoidance System " \n
+ *  
+ *  @subsection subsec PCB Board Layout
+ *  The last step in our board design was to determine the layout of the components and the connection
+ *  lines between the components that needed to be connected. When we had first designed our board, the
+ *  motor drivers were to be mounted along the left side of the board while the rest of the components
+ *  would be placed on the other side of the board. However, this created a chaotic board design and the
+ *  motor driver chips did not seem like they would be getting enough voltage to power the motors in a timely
+ *  manner, which could ultimately permanently damage other resistors on the board. We were recommended to
+ *  increase the size of connections that were supplying high voltage outputs (of about 12V). We redesigned
+ *  the board into the one shown. This was the final board we designed and ordered for the
+ *  Collision Avoidance System. \n
+ *
+ *  @image html Final_Board_Layout.png "Figure 3. Final board layout made using Eagle for the Collision Avoidance System " \n
+ *  
+ *  @author Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @copyright (c) 2020 by Peyton Ulrich, Matthew Tagupa, and Jose Chavez
+ *
+ *  @date December 1, 2020
+ *
+ *  @page pageCode Software
+
+ *  @section sec_mot Motor Operation
+ *  The goal here is to write a c++ class encapsulating all of the
+ *  functionality that will be useful for interacting with the motor and to
+ *  write test code evaluating the functionality of the motor driver class.
+ *  The motor driver class is able to control the speed of the motors by setting
+ *  the duty cycle.
+ *
+ *  @section sec_Sen Sensor Operation
+ *  Used an ultrasonic sensor to detect a wall that is further away and an infrared sensor to detect when the wall is too close.
+ *  The Ultrasonic sensor determines when to slow the motors down and the infrared determines when to stop the motors.
+ *  
+ *  @section sec_Cal Sensor Calibration
+ *  How did we calibrate the sensors. Show plots
+ *
+ *
+ *
+ *
+ *
+ */
+
+  
