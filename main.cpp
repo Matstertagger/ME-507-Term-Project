@@ -1,37 +1,39 @@
 /** @file main.cpp
- *    This file contains a program that measures some angles.
- *    
+ *    This file contains a program containing 4 tasks to run a collision avoidance car.
+ *    The car takes in inputs from an ultrasonic sensor and infrared sensor to detect objects.
+ *    The car is driven by two motors connected to the back two wheels of the car.
+ *    This program uses the sensors, processes sensor data, and determines how to run the two motors.
+ *    Task structure based on framework provided by Prof. J.R. Ridgeley
+ *    IR Sensor Code Calculations based on sample code at https://github.com/sparkfun/simple_sketches/blob/master/sharp/sharp.ino
+ *    US Sensor Code Calculations based on sample code at https://cdn-learn.adafruit.com/downloads/pdf/distance-measurement-ultrasound-hcsr04.pdf
  *
- *  @author  Peyton Ulrich, Jose Chavez, Tagupa
+ *  @author  Peyton Ulrich, Jose Chavez, Matt Tagupa
  * 
- *  @date    5 Nov 2020 Original file
+ *  @date    10 Nov 2020 Original file
+ *  @date    01 Dec 2020 Updated file
  */
 
-#include <Arduino.h>
-#include <PrintStream.h>
-#include <STM32FreeRTOS.h>
-#include "taskshare.h"
-#include "motorcontrol.h"
+#include <Arduino.h>    //Arduino header file
+#include <PrintStream.h>    //Printstream header file
+#include <STM32FreeRTOS.h>  //FreeRTOS header file
+#include "taskshare.h"      //taskshare header file
+#include "motorcontrol.h"   //motor control header file
 
-// Shares and queues should go here
-/// Share that carries an integer from user interface to simulation task
-Share<float_t> US_distance ("cm");
-Share<float_t> IR_distance ("cm");
-Share<int32_t> M1_duty_cycle ("PWM");
-Share<int32_t> M2_duty_cycle ("PWM");
-Share<bool> turn ("Turn");
-float us_duration;
-float us_distance;
-int ir_reading;
-int ir_distance;
+
+// Shares that carry information between tasks
+Share<float_t> US_distance ("cm");  //carries ultasonic distance reading from sensor_scan task to process_sensor_data task
+Share<float_t> IR_distance ("cm");  //carries infrared distance reading from sensor_scan task to process_sensor_data task
+Share<int32_t> M1_duty_cycle ("PWM");   //carries PWM duty cycle from process_sensor_data task to RS_Motor1 task
+Share<int32_t> M2_duty_cycle ("PWM");   //carries PWM duty cycle from process_sensor_data task to RS_Motor2 task
+Share<bool> turn ("Turn");  //carries from process_sensor_data task to RS_Motor1 task whether the car shall be turning
 
 
 
 
-
- /**@brief   Task which interacts with a user. 
- *  @details This task demonstrates how to use a FreeRTOS task for interacting
- *           with some user while other more important things are going on.
+ /**@brief   Task which processes sensor distance data and determines motor actions
+ *  @details This task takes in distance readings from IR and US sensors and determines the correct
+ *           action from the vehicle. It then places two PWM duty cycles to shares which will be carried
+ *           to the RS_Motor1/RS_Motor2 tasks.  
  *  @param   p_params A pointer to function parameters which we don't use.
  */
  
@@ -39,51 +41,45 @@ void task_process_sensor_data (void* p_params)
 {
     (void)p_params;            // Shuts up a compiler warning
 
-    float us_distance;
-    float ir_distance;
-    int state;  //0 = running, 1 = stopped
+    float us_distance;  //holds the distance reading from ultrasonic sensor
+    float ir_distance;  //holds the distance reading from infrared sensor
+    int full_speed = 255; //sets PWM duty cycle (as an integer from 0-255) for full speed operation of vehicle
+    int partial_speed = 200; //sets PWM duty cycle (as an integer from 0-255) for partial speed operation of vehicle
+    int state;  //current state of vehicle, 0 = running (ie. moving), 1 = stopped
 
     for (;;)
     {
-        US_distance.get(us_distance);
-        IR_distance.get(ir_distance);
-        if(us_distance > 40){
-            Serial << "Keep Running" << endl;
-            state = 0;
-            //calculates simulated motor speed
-            
-            M1_duty_cycle.put(100); //run motor full speed
-            M2_duty_cycle.put(100);
-            turn.put(false);
-            turn.put(false);
+        US_distance.get(us_distance);   //gets us distance reading from sensor_scan task
+        IR_distance.get(ir_distance);   //gets ir distance reading from sensor_scan task
+        if(us_distance > 40){   //If the distance is over 40cm (ie. far), keep running at full speed
+            //Serial << "Keep Running" << endl; //code used to simulate motor actions in Serial Monitor
+            state = 0;  //sets state to show that vehicle is running
+            M1_duty_cycle.put(full_speed); //run M1 motor at 'full speed'
+            M2_duty_cycle.put(full_speed); //run M2 motor at 'full speed'
+            turn.put(false);    //place into turn share that vehicle shall not turn
         }
-        else{
-            //check IR
-            if (ir_distance > 20){
-                Serial << "Slow down!!" << endl;
-                state = 0;
-                M1_duty_cycle.put(50); //run motor ~1/3 speed
-                M2_duty_cycle.put(50);
-                turn.put(false);
-                turn.put(false);
+        else{   //If the distance is under 40cm (ie. near), use IR sensor to decide what to do
+            if (ir_distance > 20){  //If the distance is over 20cm, continue to run motor at a reduced speed
+                //Serial << "Slow down!!" << endl; //code used to simulate motor actions in Serial Monitor
+                state = 0; //sets state to show that vehicle is running
+                M1_duty_cycle.put(partial_speed); //run M1 motor at 'partial speed'
+                M2_duty_cycle.put(partial_speed); //run M2 motor at 'partial speed'
+                turn.put(false);    //place into turn share that vehicle shall not turn
             }
-            else{
-                if(state){
-                    Serial << "Turn!!" << endl;
-                    M1_duty_cycle.put(50);
-                    M2_duty_cycle.put(50);
-                    turn.put(true);
+            else{   //If the distance is under 20cm, decide what to do
+                if(state){  //If the car is already stopped, attempt to turn the vehicle
+                    //Serial << "Turn!!" << endl; //code used to simulate motor actions in Serial Monitor
+                    M1_duty_cycle.put(partial_speed); //run M1 motor at 'partial speed'
+                    M2_duty_cycle.put(partial_speed); //run M2 motor at 'partial speed'
+                    turn.put(true); //place into turn share that vehicle shall turn
                 }
-                else{
-                    Serial << "Stop!!" << endl;
-                    
-                    state = 1;
-                    M1_duty_cycle.put(0);
-                    M2_duty_cycle.put(0);
-                    turn.put(false);
-
-                    delay(1000);    //pause 1s to allow motor/car to come to complete stop before turning
-                
+                else{   //If the car is running, bring it to a stop
+                    //Serial << "Stop!!" << endl; //code used to simulate motor actions in Serial Monitor
+                    state = 1; //sets state to show that vehicle is running
+                    M1_duty_cycle.put(0); //run M1 motor at 'partial speed'
+                    M2_duty_cycle.put(0); //run M1 motor at 'partial speed'
+                    turn.put(false);    //place into turn share that vehicle shall not turn
+                    delay(5000);    //pause 1s to allow motor/car to come to complete stop before person must turn it (due to turning not being functional)
                 } 
             }
         }
@@ -92,46 +88,48 @@ void task_process_sensor_data (void* p_params)
 
 
 
-/** @brief   Task which simulates a motor.
- *  @details This task runs at precise interfals using @c vTaskDelayUntil() and
- *           sort of simulates a motor whose duty cycle is controlled by a
- *           power level sent from the UI task. The simulation is just a very
- *           simple implementation of a first-order filter. 
+/** @brief   Task which scans two proximity sensors and places readings into shares
+ *  @details This task runs an ultrasonic sensor and an infrared sensor to collect proximity readings.
+ *           Code to use these sensors is borrowed from example code found online and cited within comments.
  *  @param   p_params A pointer to function parameters which we don't use.
  */
 void task_sensor_scan (void* p_params)
 {
     (void)p_params;                             // Shuts up a compiler warning
 
-    // Set up the variables of the simulation here
     const TickType_t sim_period = 60;         // RTOS ticks (ms) between runs
 
-    // Initialise the xLastWakeTime variable with the current time.
-    // It will be used to run the task at precise intervals
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
+    float us_duration;  //store duration of ultrasonic echo pulse
+    float us_distance;  //store distance reading from ultrasonic sensor
+    int ir_reading;     //store voltage reading of infrared vout
+    int ir_distance;    //store distance reading from infrared sensor
 
     for (;;)
     {
 
         //example code found at: https://cdn-learn.adafruit.com/downloads/pdf/distance-measurement-ultrasound-hcsr04.pdf
-        pinMode (A1, INPUT);    //ultrasonic ECHO
-        pinMode (A2, OUTPUT);   //ultrasonic TRIG
-        pinMode (A5, INPUT);
+        pinMode (A1, INPUT);    //set pin connected to ultrasonic ECHO to input
+        pinMode (A2, OUTPUT);   //set pin connected to ultrasonic TRIGGER to input
+        
+        //follow timing diagram specified at https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
         digitalWrite (A2, LOW);
         delayMicroseconds (2);
         digitalWrite (A2, HIGH);
         delayMicroseconds (10);
-        us_duration = pulseIn(A1, HIGH, 30000);
-        us_distance = us_duration / 58.2;
-        //Serial << "Ultrasonic: " << us_distance << endl;  //test ultrasonic reading
+        us_duration = pulseIn(A1, HIGH, 30000); //read duration of echo pulse
+        us_distance = us_duration / 58.2;   //divide by 58.2 as recomended in example code
+        //Serial << "Ultrasonic: " << us_distance << endl;  //test ultrasonic reading in Serial monitor
         
-        ir_reading = analogRead(A5);
-        ir_distance = (5269.8/(ir_reading-136.88));
-        //Serial << "Infrared: " << ir_distance << endl;    //test IR reading
+        //example code found at: https://github.com/sparkfun/simple_sketches/blob/master/sharp/sharp.ino
+        pinMode (A5, INPUT);    //set pin connected to infrared Vout to input
+        ir_reading = analogRead(A5);    //read voltage from IR sensor
+        ir_distance = (5269.8/(ir_reading-136.88)); //convert from voltage reading to distance (cm), refer to calibration plot in documentation
+        //Serial << "Infrared: " << ir_distance << endl;    //test IR reading in Serial monitor
 
-        US_distance.put(us_distance);
-        IR_distance.put(ir_distance);
+        US_distance.put(us_distance);   //put US distance reading in share
+        IR_distance.put(ir_distance);   //put IR distance reading in share
 
         // This type of delay waits until it has been the given number of RTOS
         // ticks since the task previously began running. This prevents timing
@@ -140,31 +138,26 @@ void task_sensor_scan (void* p_params)
     }
 }
 
-/**@brief   Task which interacts with a user. 
- *  @details This task demonstrates how to use a FreeRTOS task for interacting
- *           with some user while other more important things are going on.
+/**@brief   Task which runs a motor
+ *  @details This task uses the PWM duty cycle given to it and decides how to run the motor
  *  @param   p_params A pointer to function parameters which we don't use.
  */
- 
 void task_RS_Motor1 (void* p_params)
 {
     (void)p_params;            // Does nothing but shut up a compiler warning
 
-    // Set up the variables of the simulation here
     const TickType_t sim_period = 60;         // RTOS ticks (ms) between runs
 
-    // Initialise the xLastWakeTime variable with the current time.
-    // It will be used to run the task at precise intervals
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
     
-    int32_t duty_cycle_var;
-    float sim_A = 0.9;
+    int32_t duty_cycle_var; //stores the desired duty cycle of the PWM signal to motor
+    float sim_A = 0.9;  //smoothing variable for motor speed
     float sim_B = 1 - sim_A;
-    float sim_speed;
+    float motor_speed;    //stores the desired motor speed after smoothing
 
-    MotorControl MotorA(D12, D7, D8, D10);
-    bool turn_stored;
+    MotorControl MotorA(D12, D7, D8, D10);  //sets up motor object with correct pins
+    bool turn_stored;   //stores whether the vehicle shall turn
 
 
     for (;;)
@@ -174,28 +167,28 @@ void task_RS_Motor1 (void* p_params)
 
         if(duty_cycle_var == 0){
             sim_speed = 0;  //if we want to stop the motor, just stop it
-            turn_stored = true;
+            turn_stored = true; //store that we want to turn the vehicle
         }
         else{
-            sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
-            turn.get(turn_stored);
+            motor_speed = motor_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
+            turn.get(turn_stored);  //gather from share whether the vehicle shall turn
         }
         
-        //Serial << duty_cycle_var << endl;    //test duty_cycle_var
-        //Serial << sim_speed << endl;    //test sim_speed
+        //Serial << duty_cycle_var << endl;    //test duty_cycle_var in Serial monitor
+        //Serial << motor_speed << endl;    //test motor_speed in Serial monitor
         
-        MotorA.runMotor((uint32_t) sim_speed, turn_stored);
+        MotorA.runMotor((uint32_t) motor_speed, turn_stored); //run motor at desired speed and direction
+        //if the car is turning, running M1 clockwise, otherwise run counterclockwise
         
         vTaskDelayUntil (&xLastWakeTime, sim_period);
     }
 }
 
-/**@brief   Task which interacts with a user. 
- *  @details This task demonstrates how to use a FreeRTOS task for interacting
- *           with some user while other more important things are going on.
+
+/**@brief   Task which runs a motor
+ *  @details This task uses the PWM duty cycle given to it and decides how to run the motor
  *  @param   p_params A pointer to function parameters which we don't use.
  */
- 
 void task_RS_Motor2 (void* p_params)
 {
     (void)p_params;            // Does nothing but shut up a compiler warning
@@ -208,12 +201,12 @@ void task_RS_Motor2 (void* p_params)
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
     
-    int32_t duty_cycle_var;
-    float sim_A = 0.9;
+    int32_t duty_cycle_var; //stores the desired duty cycle of the PWM signal to motor
+    float sim_A = 0.9;  //smoothing variable for motor speed
     float sim_B = 1 - sim_A;
-    float sim_speed;
+    float motor_speed;    //stores the desired motor speed after smoothing
 
-    MotorControl MotorB(D6, D2, D4, D9);
+    MotorControl MotorB(D6, D2, D4, D9);  //sets up motor object with correct pins
 
 
     for (;;)
@@ -225,13 +218,14 @@ void task_RS_Motor2 (void* p_params)
             sim_speed = 0;  //if we want to stop the motor, just stop it
         }
         else{
-            sim_speed = sim_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
+            motor_speed = motor_speed * sim_A + duty_cycle_var * sim_B;    //otherwise, smoothly change speed
         }
         
-        //Serial << duty_cycle_var << endl;    //test duty_cycle_var
-        //Serial << sim_speed << endl;    //test sim_speed
+        //Serial << duty_cycle_var << endl;    //test duty_cycle_var in Serial monitor
+        //Serial << motor_speed << endl;    //test motor_speed in Serial monitor
         
-        MotorB.runMotor((uint32_t) sim_speed, true);
+        MotorB.runMotor((uint32_t) sim_speed, true); //run motor at desired speed and direction
+        //always run this motor clockwise (even when turning)
         
         vTaskDelayUntil (&xLastWakeTime, sim_period);
     }
